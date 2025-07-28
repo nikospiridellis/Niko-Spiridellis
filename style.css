@@ -33,6 +33,29 @@ nav {
     margin: 0 auto;
 }
 
+/* Mobile navigation adjustments */
+@media (max-width: 600px) {
+    header {
+        padding: 12px 16px;
+    }
+    
+    nav {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+    }
+    
+    .nav-links {
+        gap: 16px;
+        justify-content: center;
+    }
+    
+    .nav-link {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+}
+
 .logo h1 {
     font-size: 22px;
     font-weight: 400;
@@ -161,13 +184,13 @@ main {
     width: 500px;
     height: 500px;
     border-radius: 0;
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     color: rgba(255, 255, 255, 0.5);
     font-size: 18px;
-    background: rgba(255, 255, 255, 0.03);
+    background: transparent;
     transition: all 0.4s ease;
     object-fit: cover;
     object-position: bottom;
@@ -182,26 +205,24 @@ main {
     width: 500px;
     height: 500px;
     border-radius: 0;
-    border: 2px solid rgba(87, 6, 140, 0.2);
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     color: rgba(255, 255, 255, 0.4);
     font-size: 16px;
-    background: linear-gradient(135deg, rgba(87, 6, 140, 0.05), rgba(255, 255, 255, 0.02));
+    background: transparent;
     transition: all 0.4s ease;
     object-fit: cover;
     object-position: center;
 }
 
 .about-image-primary .placeholder-image:hover {
-    border-color: rgba(87, 6, 140, 0.6);
     box-shadow: 0 0 40px rgba(87, 6, 140, 0.3);
     transform: scale(1.02);
 }
 
 .about-image-secondary .placeholder-image:hover {
-    border-color: rgba(87, 6, 140, 0.6);
     box-shadow: 0 0 40px rgba(87, 6, 140, 0.2);
     transform: scale(1.02);
 }
@@ -231,8 +252,8 @@ main {
     width: 100%;
     height: 100%;
     border-radius: 0;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    border: none;
     object-fit: cover;
 }
 
@@ -292,23 +313,21 @@ main {
     transition: transform 0.4s ease;
 }
 
-.contact-photo-frame .placeholder-image {
+.contact-photo {
     width: 450px;
     height: 300px;
     border-radius: 0;
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 18px;
-    background: rgba(255, 255, 255, 0.03);
+    border: none;
     transition: all 0.4s ease;
     object-fit: cover;
+    display: block;
 }
 
-.contact-photo-frame .placeholder-image:hover {
-    border-color: rgba(87, 6, 140, 0.6);
+.contact-photo.right-aligned {
+    object-position: right center;
+}
+
+.contact-photo:hover {
     box-shadow: 0 0 40px rgba(87, 6, 140, 0.3);
     transform: scale(1.02);
 }
@@ -358,8 +377,13 @@ footer p {
     }
 
     .nav-links {
-        gap: 24px;
+        gap: 20px;
     }
+
+    .nav-link {
+        font-size: 13px;
+    }
+}
 
     .about-content,
     .contact-content {
@@ -393,16 +417,29 @@ footer p {
 }
 
 @media (max-width: 480px) {
-    .nav-links {
-        display: none;
-    }
-
     .logo h1 {
         font-size: 18px;
     }
 
+    .nav-links {
+        gap: 20px;
+    }
+
+    .nav-link {
+        font-size: 12px;
+        padding: 8px 12px;
+        min-height: 44px; /* Better touch targets */
+        display: flex;
+        align-items: center;
+    }
+
     .about-text h2 {
         font-size: 28px;
+    }
+
+    .about-text p {
+        font-size: 16px;
+        line-height: 1.6;
     }
 
     .about-image-primary .placeholder-image,
@@ -412,12 +449,24 @@ footer p {
         font-size: 12px;
     }
 
-    .contact-form {
-        padding: 24px;
+    .contact-photo {
+        width: 100%;
+        max-width: 350px;
+        height: 250px;
     }
 
     .gallery-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .gallery-item {
+        margin-bottom: 8px;
+    }
+    
+    /* Prevent zooming on input focus */
+    input, select, textarea {
+        font-size: 16px;
     }
 }
 
@@ -434,6 +483,37 @@ footer p {
     backdrop-filter: blur(10px);
 }
 
+/* Mobile lightbox improvements */
+@media (max-width: 768px) {
+    .lightbox-nav {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+    
+    .lightbox-prev {
+        left: 20px;
+    }
+    
+    .lightbox-next {
+        right: 20px;
+    }
+    
+    .lightbox-close {
+        top: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+    }
+    
+    .lightbox-counter {
+        bottom: 20px;
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+}
+
 .lightbox.active {
     display: flex;
     align-items: center;
@@ -447,6 +527,7 @@ footer p {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .lightbox-image {
@@ -455,13 +536,14 @@ footer p {
     object-fit: contain;
     border-radius: 0;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
 }
 
 .lightbox-placeholder {
     width: 80vw;
     height: 60vh;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    border: none;
     border-radius: 0;
     display: flex;
     align-items: center;
@@ -469,6 +551,73 @@ footer p {
     color: rgba(255, 255, 255, 0.7);
     font-size: 24px;
     font-weight: 300;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+#lightbox-image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#lightbox-image .lightbox-image {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 0;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+/* Animation classes for sliding transitions */
+.slide-out-left {
+    transform: translateX(-100%) scale(0.8);
+    opacity: 0;
+}
+
+.slide-out-right {
+    transform: translateX(100%) scale(0.8);
+    opacity: 0;
+}
+
+.slide-in-left {
+    transform: translateX(-100%) scale(0.8);
+    opacity: 0;
+}
+
+.slide-in-right {
+    transform: translateX(100%) scale(0.8);
+    opacity: 0;
+}
+
+.slide-in-center {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+}
+
+/* Loading shimmer effect */
+.lightbox-loading {
+    position: relative;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
 }
 
 .lightbox-nav {
