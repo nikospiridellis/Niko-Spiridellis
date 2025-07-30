@@ -221,6 +221,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Wrap title words in spans for individual hover effects
+document.addEventListener('DOMContentLoaded', function() {
+    const aboutTitle = document.querySelector('.about-main-title');
+    if (aboutTitle) {
+        const text = aboutTitle.innerHTML;
+        const words = text.split(/(\s+|<br>)/);
+        const wrappedWords = words.map(word => {
+            if (word.trim() && !word.includes('<br>')) {
+                return `<span class="word">${word}</span>`;
+            }
+            return word;
+        }).join('');
+        aboutTitle.innerHTML = wrappedWords;
+    }
+});
+
 // Add some interactive effects
 window.addEventListener('scroll', function() {
     const header = document.querySelector('header');
@@ -232,25 +248,120 @@ window.addEventListener('scroll', function() {
         header.style.backdropFilter = 'none';
     }
     
-    // About images scroll animation
-    const aboutSection = document.getElementById('about');
-    const primaryImage = document.querySelector('.about-image-primary');
-    const secondaryImage = document.querySelector('.about-image-secondary');
-    
-    if (aboutSection && aboutSection.classList.contains('active') && primaryImage && secondaryImage) {
-        const scrollProgress = Math.min(window.scrollY / 500, 1);
+    // Title fade effect on scroll
+    const aboutTitle = document.querySelector('.about-main-title');
+    if (aboutTitle) {
+        const titleRect = aboutTitle.getBoundingClientRect();
+        const titleVisible = titleRect.bottom > 0 && titleRect.top < window.innerHeight * 0.6;
         
-        // Animate primary image from left
-        const primaryTranslateX = Math.max(0, 100 - (scrollProgress * 120));
-        primaryImage.style.transform = `translateX(-${primaryTranslateX}px)`;
-        
-        // Animate secondary image from right
-        const secondaryTranslateX = Math.max(0, 100 - (scrollProgress * 120));
-        secondaryImage.style.transform = `translateX(${secondaryTranslateX}px)`;
-        
-        // Add subtle rotation based on scroll
-        const rotation = scrollProgress * 2;
-        primaryImage.style.transform += ` rotate(${rotation}deg)`;
-        secondaryImage.style.transform += ` rotate(-${rotation}deg)`;
+        if (titleVisible) {
+            aboutTitle.classList.remove('fade-out');
+        } else {
+            aboutTitle.classList.add('fade-out');
+        }
     }
+    
+    // About paragraphs scroll animation with visibility-based opacity
+    const aboutParagraphs = document.querySelectorAll('.about-paragraph');
+    
+    aboutParagraphs.forEach(paragraph => {
+        const rect = paragraph.getBoundingClientRect();
+        const elementHeight = rect.height;
+        const windowHeight = window.innerHeight;
+        
+        // Calculate how much of the element is visible
+        let visibleHeight = 0;
+        if (rect.top < windowHeight && rect.bottom > 0) {
+            const visibleTop = Math.max(0, rect.top);
+            const visibleBottom = Math.min(windowHeight, rect.bottom);
+            visibleHeight = visibleBottom - visibleTop;
+        }
+        
+        // Calculate visibility percentage
+        const visibilityPercentage = Math.min(1, Math.max(0, visibleHeight / elementHeight));
+        
+        // Determine scroll direction based on element position
+        const isScrollingDown = rect.top < windowHeight * 0.5;
+        
+        // Apply opacity based on visibility percentage
+        if (visibilityPercentage > 0) {
+            paragraph.classList.add('visible');
+            paragraph.style.opacity = visibilityPercentage;
+            
+            // Determine if we're scrolling up and element is coming from above
+            const comingFromAbove = rect.bottom < windowHeight && rect.top < windowHeight * 0.3;
+            
+            if (comingFromAbove) {
+                // Scrolling up - fade in from above
+                paragraph.style.transform = `translateY(${-30 * (1 - visibilityPercentage)}px)`;
+            } else if (isScrollingDown) {
+                // Scrolling down - fade in from below
+                paragraph.style.transform = `translateY(${30 * (1 - visibilityPercentage)}px)`;
+            } else {
+                // Default behavior
+                paragraph.style.transform = `translateY(${-30 * (1 - visibilityPercentage)}px)`;
+            }
+        } else {
+            paragraph.classList.remove('visible');
+            paragraph.style.opacity = 0;
+            
+            // Set initial transform based on element position
+            const comingFromAbove = rect.bottom < windowHeight;
+            paragraph.style.transform = comingFromAbove ? 'translateY(-30px)' : 'translateY(30px)';
+        }
+    });
+    
+    // About images scroll animation - keep centered until halfway off screen, then fade out
+    const aboutImages = document.querySelectorAll('.about-image');
+    
+    aboutImages.forEach(image => {
+        const rect = image.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        const elementHeight = rect.height;
+        
+        // Check if image is in viewport
+        const imageInViewport = rect.top < windowHeight && rect.bottom > 0;
+        
+        // Calculate how much of the element is visible
+        let visibleHeight = 0;
+        if (rect.top < windowHeight && rect.bottom > 0) {
+            const visibleTop = Math.max(0, rect.top);
+            const visibleBottom = Math.min(windowHeight, rect.bottom);
+            visibleHeight = visibleBottom - visibleTop;
+        }
+        
+        // Calculate visibility percentage
+        const visibilityPercentage = Math.min(1, Math.max(0, visibleHeight / elementHeight));
+        
+        if (imageInViewport) {
+            image.classList.add('visible');
+            
+            // Start fading when 80% visible, completely black when bottom reaches top of screen
+            if (visibilityPercentage >= 0.8) {
+                // More than 80% visible - stay completely opaque
+                image.style.opacity = 1;
+                image.style.transform = 'translateX(0)';
+            } else {
+                // Less than 80% visible - start aggressive fade to black
+                const animationProgress = 1 - (visibilityPercentage / 0.8); // Normalize to 0-1
+                
+                // Fade out completely to black (opacity 0)
+                image.style.opacity = 1 - animationProgress;
+                
+                // Keep images centered, no horizontal movement
+                image.style.transform = 'translateX(0)';
+            }
+        } else {
+            // Image is out of viewport
+            if (rect.top > windowHeight) {
+                // Image is below viewport - reset to center position
+                image.style.opacity = 1;
+                image.style.transform = 'translateX(0)';
+            } else if (rect.bottom < 0) {
+                // Image is above viewport - completely black
+                image.style.opacity = 0;
+                image.style.transform = 'translateX(0)';
+            }
+        }
+    });
 });
